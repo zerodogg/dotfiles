@@ -1,0 +1,41 @@
+#!/bin/bash
+# ===============================================================
+# bashrc_desktop
+# Eskild Hustvedt
+# ===============================================================
+
+# These are aliases for the various wrapper functions defined later. This is so
+# one can use ie. \git to bypass the wrapper function.
+alias frotz='frotz'
+# Screen-only aliases
+if [ "$TERM" == 'screen' ] || [ "$TERM" == 'screen-bce' ]; then
+	# Some versions of alsamixer misunderstands screen, thinking it doesn't support character
+	# line graphics. Tricking it into thinking it's a xterm works around it.
+	alias alsamixer='OutputTermTitle alsamixer; TERM=xterm alsamixer'
+fi
+
+# frotz wrapper. Using this instead of an alias so that the game is what gets put
+# in the terminal title.
+function FROTZWRAP ()
+{
+	OutputTermTitle "$1"
+	local FROTZ="`which frotz`"
+	local frotzWidth
+	let frotzWidth=$(tput cols)-80
+	[[ "$FROTZ" ]] && $FROTZ -r $frotzWidth -u 10 -Z 0 -d "$@"
+}
+
+function xwin ()
+{
+	[ "$SIZE" == "" ] && SIZE=1024x768
+	(sleep 1s; DISPLAY=:1.0; xfwm4 --display=:1.0) &
+	(sleep 1s; DISPLAY=:1.0; xdg-terminal ) &
+	Xephyr -screen $SIZE :1
+}
+
+# Source sshman if it exists
+if [ -f "$HOME/Documents/software/sshman/99sshman.sh" ]; then
+	. "$HOME/Documents/software/sshman/99sshman.sh"
+elif [ -f /etc/profile.d/99sshman.sh ]; then
+	. /etc/profile.d/99sshman.sh
+fi

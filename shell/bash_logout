@@ -1,0 +1,13 @@
+# ===============================================================
+# bash_logout/zlogout
+# Eskild Hustvedt
+# vim: set ft=sh :
+# ===============================================================
+
+# Get rid of sudo if needed when exiting an ssh session
+if [ "$SSH_CLIENT" != "" ]; then
+	\sudo -k &>/dev/null
+# When leaving the console clear the screen to increase privacy
+elif [ "$SHLVL" = 1 ]; then
+	[ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+fi

@@ -1,0 +1,7 @@
+# ===============================================================
+# zshenv
+# Eskild Hustvedt
+# ===============================================================
+
+# Source shared aliases and settings
+[ -e ~/.env_shared ] && source ~/.env_shared

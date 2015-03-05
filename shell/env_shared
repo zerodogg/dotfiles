@@ -1,0 +1,68 @@
+#!/bin/bash
+#!/bin/zsh
+# ^- Must work in both
+# ===============================================================
+# env_shared
+# Eskild Hustvedt
+# ===============================================================
+
+# -------------------------
+# Some environment settings
+# -------------------------
+
+# Default timezone
+export TZ='CET'
+# Local TEX/LATEX path if available
+export TEXMFHOME="$HOME/Documents/random/local-tex/"
+# Default editor, and visual editor
+export EDITOR='vim'
+export VISUAL="$EDITOR"
+# Default pager
+export PAGER='less -wsr'
+# My email address
+export EMAIL='eskild@zerodogg.org'
+# Use aspell
+export SPELL='aspell'
+# CVS and rsync should use SSH not RSH by default
+export CVS_RSH='ssh'
+export RSYNC_RSH='ssh'
+# Explicitly set manpath, this allows me to have local manpages
+export MANPATH="/usr/local/man:/usr/local/share/man:/usr/share/man:$HOME/.local/share/man:$MANPATH"
+# Limit the width of manpages
+export MANWIDTH='80'
+# Make less display the last line as white, remove blank lines
+export LESS='-wsR'
+if [ "$LESSOPEN" = '' ] && [ -x /usr/bin/lesspipe ]; then
+	export LESSOPEN='| /usr/bin/lesspipe %s'
+	export LESSCLOSE='/usr/bin/lesspipe %s %s'
+fi
+# My own commands
+export PATH="$HOME/bin:$HOME/.bin:$HOME/.local/bin:$PATH:/usr/games"
+# Roots PATH should always include these
+if [ "$EUID" = '0' ]; then
+	export PATH="/sbin:/usr/sbin:$PATH"
+fi
+# Root specific settings
+if [ "$UID" = '0' ]; then
+	# Timeout the session *IF* we're not running directly inside screen.
+	#
+	# Screen sets STY to the name of its virtual device. When attempting to
+	# check it for existance relative to / it will fail (while normal STY's
+	# that are already relative to /, will succeed).
+	# So, if STY is unset or doesn't exist, add the timeout.
+	if [ "$STY" = "" ] || [ -e "/$STY" ]; then
+		TMOUT="1800"
+	elif [ "$TMOUT" = "1800" ]; then
+		TMOUT="0"
+	fi
+fi
+
+# Source rvm if it is installed
+if [ -e "$HOME/.rvm/scripts/rvm" ]; then
+    source "$HOME/.rvm/scripts/rvm"
+fi
+
+# And finally, source host-specific changes if any
+if [ -e "$HOME/.env_shared_local" ]; then
+	source "$HOME/.env_shared_local"
+fi

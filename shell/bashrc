@@ -1,0 +1,173 @@
+# ===============================================================
+# bashrc
+# Eskild Hustvedt
+# ===============================================================
+
+# Source global bashrc if it exists
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Remove halt+reboot from logs as I don't want to run those by mistake
+# Remove mysql from logs since it can contain passwords
+export HISTIGNORE='halt:reboot:mysql:mysqldump'
+# Ignore dupes in the history
+export HISTCONTROL='erasedups:ignorespace'
+# I use my bash history, so make it long
+export HISTSIZE='2000'
+# Don't want bash to check my mail for me
+unset MAILCHECK; export MAILCHECK
+shopt -u mailwarn
+# Source shared environment variables
+[ -e ~/.env_shared ] && source ~/.env_shared
+
+# Don't make <tab> without anything use completion
+shopt -s no_empty_cmd_completion
+# Fix my spelling when chdiring
+shopt -s cdspell
+
+# My prompt - nothing fancy, just a standard prompt with return value
+# Also, add the string chroot when inside a schroot
+if [[ "$SCHROOT_UID" ]]; then
+	PS1='[$? chroot \u@\h \W]\$ '
+else
+	PS1='[$? \u@\h \W]\$ '
+fi
+# Use OutputTermTitle to output the terminal header
+PROMPT_COMMAND='OutputTermTitle "${PWD/$HOME/~}"'
+# Root specific settings
+if [ "$UID" == '0' ]; then
+	# Have a root indicator on the prompt
+	PROMPT_COMMAND="$PROMPT_COMMAND:#"
+fi
+
+# -------
+# Aliases
+# -------
+
+# Remove all existing aliases
+unalias -a
+# Source shared aliases and settings
+[ -e ~/.shell_shared ] && source ~/.shell_shared
+
+# Remove temporary files. We use a subshell with dotglob set, so that we
+# can enable dotglob (to get .something~) but not override whatever is
+# set in the shell at the time. The egrep is to suppress an empty line
+# that would otherwise get output when no *~ files exists.
+alias rmtemp='echo "`shopt -s dotglob; \rm -fv *~`" |\egrep "\\S"; :'
+
+# ----------------
+# Function aliases
+# ----------------
+
+# Private command-not-found
+if [ -x /usr/lib/command-not-found ]; then
+	export __ZD_COM_NOT_FOUND=/usr/lib/command-not-found
+elif [ -x /usr/share/command-not-found/command-not-found ]; then
+	export __ZD_COM_NOT_FOUND=/usr/share/command-not-found/command-not-found
+fi
+if [ "$__ZD_COM_NOT_FOUND" != '' ]; then
+	command_not_found_handle ()
+	{
+		/usr/bin/python "$__ZD_COM_NOT_FOUND" -- $1 2>&1 | perl -pi -e 's#apt-get#aptitude#g'
+		return 127
+	}
+fi
+# Initialization of OutputTermTitle
+_TERMTITLE_BASE=""
+# Include hostname (and possibly username) when under ssh
+if [[ "$SSH_CLIENT" ]]; then
+	_TERMTITLE_BASE="${HOSTNAME%%.*}:"
+	# If we're not zerodogg or eskild, and /home/zerodogg exists, include the
+	# username in the title
+	if [ "$USER" != "zerodogg" ] && [ "$USER" != "eskild" ] && [ -d "/home/zerodogg" ]; then
+		_TERMTITLE_BASE="$USER@$_TERMTITLE_BASE"
+	fi
+# Include the string chroot: if in an schroot
+elif [[ "$SCHROOT_UID" ]]; then
+	TERM_OUTSTRING="chroot:"
+fi
+# Put something into the screen/terminal title, including hostname if using SSH
+function OutputTermTitle ()
+{
+	# The _TERMTITLE_BASE is initialized earlier in this file
+	# The string to output
+	local TERM_OUTSTRING="$_TERMTITLE_BASE$@"
+	# Per-terminal output methods
+	case $TERM in
+		# Screen
+		*screen* )
+			echo -ne "\033k$TERM_OUTSTRING\033\\";;
+		xterm*|rxvt*|terminal* )
+			echo -ne "\033]0;$TERM_OUTSTRING\007";;
+	esac
+}
+
+# ----------
+# Completion
+# ----------
+
+# Dynamically load git bash completion
+function __LoadGitBashCompl ()
+{
+	complete -r git
+	if [ -e '/etc/bash_completion.d/git' ]; then
+		source '/etc/bash_completion.d/git'
+		_git "$@"
+	else
+		complete -W 'add blame checkout commit diff help merge mkdir move stat status branch push pull clean log rebase reset tag clone cherry-pick' -A file git
+	fi
+}
+
+# Remove any previously declared completions
+complete -r
+# SSH
+complete -A hostname -C "/usr/bin/perl -e 'my \$match = \$ARGV[1] ? \$ARGV[1] : \".*\"; open(my \$INPUT,\"<\",\"$HOME/.ssh/config\") or exit(0); foreach(<\$INPUT>) {next unless s/^\s*Host(name)?\s+//;chomp;foreach(split(/\s+/)) { print \"\$_\\n\" if(/^\$match/ and not /^\d/ and not /\*/);}}'" ssh sshpersist sshmaster fssh tssh
+# SCP/Rsync (same as SSH but with -A file addded)
+complete -A hostname -A file -C "/usr/bin/perl -e 'my \$match = \$ARGV[1] ? \$ARGV[1] : \".*\"; open(my \$INPUT,\"<\",\"$HOME/.ssh/config\") or exit(0); foreach(<\$INPUT>) {next unless s/^\s*Host(name)?\s+//;chomp;foreach(split(/\s+/)) { print \"\$_\\n\" if(/^\$match/ and not /^\d/ and not /\*/);}}'" scp rsync cpr ccpr nccpr ncpr ncprn
+# Makefile target autocompletion
+complete -A directory -C "/usr/bin/perl -e 'my \$match = \$ARGV[1] ? \$ARGV[1] : \".*\"; open(my \$INPUT, \"<\", \"./Makefile\") or exit(0); foreach(<\$INPUT>) { next unless s/^(\w+):.*$/\$1/; chomp;print \"\$_\n\" if /^\$match/;}'" make
+# SVN/CVS
+complete -W "add blame checkout cleanup commit copy diff export help info list merge mkdir move propedit propget proplist propset resolved revert stat status switch unlock update" -A file svn svk
+# git - dynamically loaded on runtime when first used
+[ "$BASH_VERSINFO" -gt 2 ] && complete -o default -o nospace -F __LoadGitBashCompl git
+# Directory
+complete -A directory cd rmdir
+# Help
+complete -A helptopic help
+# Exports
+complete -A export export printenv
+# Sudo and other 'command wrappers'
+complete -a -cfd sudo nice trickle
+
+# Output helpful information about zsh if we're interactive, a login
+# shell and /bin/zsh is an executable
+if [ ! -z "$PS1" ] && shopt -q login_shell && [ -x /bin/zsh ]; then
+	echo "***"
+	echo "zsh is available. Run the following to set it as default: chsh -s /bin/zsh"
+	echo "***"
+fi
+
+# --------------
+# Final sourcing
+# --------------
+
+# Source "desktop" bashrc if it exists
+if [ -e "$HOME/.bashrc_desktop" ]; then
+	source "$HOME/.bashrc_desktop"
+fi
+# And finally, source host-specific changes if any
+# This is useful because it lets me quickly copy all new changes in the bashrc
+# to all the machines I use, while still being able to make any host-specific
+# changes (ie. set EMAIL to something other than the default)
+if [ -e "$HOME/.bashrc_local" ]; then
+	source "$HOME/.bashrc_local"
+fi
+if [ -e "$HOME/.shell_shared_local" ]; then
+	source "$HOME/.shell_shared_local"
+fi
+if [ -e "$HOME/.env_shared_local" ]; then
+	source "$HOME/.env_shared_local"
+fi
+# Succeed
+:

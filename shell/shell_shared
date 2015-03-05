@@ -1,0 +1,377 @@
+#!/bin/bash
+#!/bin/zsh
+# ^- Must work in both
+
+# ===============================================================
+# shell_shared
+# Eskild Hustvedt
+# ===============================================================
+# This file contains shared aliases and functions that work both under
+# zsh and bash.
+#   - - - - - - - - - -
+#   Conditional aliases
+#   - - - - - - - - - -
+
+if [[ "$OSTYPE" = linux* ]]; then # Assume GNU LS
+	# We want to be human-readable, coloured and quoted by default
+	alias ls='ls --file-type -h --color=auto --quoting-style=shell --time-style=long-iso'
+    alias lls='ls -L'
+	# Display large files
+	alias lslarge="ls -lahs |\grep -E '^\s*([0-9][0-9,]+M|[0-9,]+G)'"
+	alias lshuge="ls -lahs |\grep -E '^\s*([0-9,]+G)'"
+else # *BSD ls
+	# Note: Does not use LS_COLORS and doesn't support anything like it.
+	export CLICOLOR=1
+	export CLICOLOR_FORCE=1
+	alias ls='ls -F -G -h'
+fi
+# ack is named ack-grep on some systems
+if type ack-grep &>/dev/null; then
+    alias REAL_ACK='ack-grep'
+else
+    alias REAL_ACK='ack'
+fi
+alias ack='REAL_ACK --type-set spec=.spec --type-add php=.ctp --nosql'
+# node(js) is named nodejs on some systems
+if type nodejs &>/dev/null; then
+    alias node='OutputTermTitle node; nodejs'
+fi
+# Vim aliases
+alias vi='vim'
+# Make -p default for vim, and use -X if under ssh
+# (connecting to the X server when under ssh is slow)
+if [ "$SSH_CLIENT" != "" ]; then
+    alias vim='LC_ALL=C vim -p -X'
+else
+    alias vim='LC_ALL=C vim -p'
+fi
+# Vim bootstrapper
+alias vimbootstrap='if [ ! -e ~/.vim/bundle/neobundle.vim ]; then mkdir -p ~/.vim/bundle; git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim;fi; vim +"NeoBundleUpdate! vimproc.vim" +q; vim +NeoBundleInstall +q'
+# Start vim in the wiki
+alias vimwiki='vim -c VimwikiIndex'
+# Persistent connection to a server. Uses autossh if available (which will
+# restart the connection if needed)
+if type autossh &>/dev/null; then
+    alias sshpersist='autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -o TCPKeepAlive=yes'
+else
+    alias sshpersist='ssh -f -N -o ServerAliveCountMax=8 -o ServerAliveInterval=15 -o TCPKeepAlive=yes'
+fi
+
+#   - - - - - - -
+#   Normal aliases
+#   - - - - - - -
+
+# sshpersist as a ControlMaster
+alias sshmaster='sshpersist -q -oControlMaster=yes'
+# SSH that ignores master connections
+alias fssh='ssh -oControlMaster=no -oControlPath=none'
+# SSH for 'trusted' hosts (usually LAN, forwards agent and X11)
+alias tssh='ssh -oForwardAgent=yes -oForwardX11=yes'
+# Make grep use colour
+alias grep='grep -n --colour=auto'
+# egrep alias, colour and extended regexp
+alias egrep='grep -E -n --colour=auto'
+# fgrep alias, colour and fixed strings
+alias fgrep='grep -F -n --colour=auto'
+# Alias for grepping with perl regex
+alias plgrep='grep -P -n --colour=auto'
+# Make cp, mv and rm verbose and interactive by default
+alias cp='cp -vi'
+alias mv='mv -vi'
+alias rm='rm -vi'
+# Displays directories containing large files
+alias dularge="du -h --max-depth=1 2>/dev/null |\grep -E '([0-9][0-9]+M|[0-9]+G)'"
+# dularge that dereferences symlinks
+alias duslarge="du --exclude=.git -L -h --max-depth=1 2>/dev/null |\grep -E '([0-9][0-9]+M|[0-9]+G)'"
+# Displays directories containing huge (1G+) files
+alias duhuge="du -h --max-depth=1 2>/dev/null |\grep -E '([0-9]+G)'"
+# duhuge that dereferences symnlinks
+alias duhuge="du -L -h --max-depth=1 2>/dev/null |\grep -E '([0-9]+G)'"
+# Make dict use less and actually work, by default
+alias dict='lessiFy dict -h dict.org'
+# Exit terminal on halt and reboot
+alias halt='halt && exit'
+alias reboot='reboot && exit'
+# Display FS-type and human-readable info by default, also
+# ignore translations, they just mess up the output
+alias df='LC_ALL=C df -Th -x tmpfs'
+# Output a English date
+alias date='LC_ALL=C date'
+# Output a date in the international date format
+alias intdate="date '+%Y-%m-%d'"
+# Wider ps
+alias pswide="ps -o user:18,pid,pcpu,pmem,osz='---Size---' -o rss='---RSS---' -o stime,time,args ax"
+# Alias for PST/PDT time
+alias pstdate='TZ=PST8PDT date "+%a %b %e %I:%M:%S %p %Z %Y (%H:%M:%S)"'
+alias pdtdate='pstdate'
+# An rsync that is usable by default
+alias cpr='rsync -avzh --progress --partial'
+# Same as cpr but without compression
+alias cprn='rsync -avh --progress --partial'
+# Same as above but with better compression
+alias ccpr='cpr --compress-level=9'
+# Same as ccpr but with inplace copying. Good for new files (hence the n)
+alias nccpr='ccpr --inplace'
+# Same as cpr but with inplace copying (ie. nccpr without high compression)
+alias ncpr='cpr --inplace'
+# Same as cprn but with inplace copying
+alias ncprn='cprn --inplace'
+# tig/gitk with title and all branches
+alias tig='tig --all'
+alias gitk='gitk --all'
+# I keep writing "ti" instead of "tig"
+alias ti="tig"
+# These are aliases for the various wrapper functions defined later. This is so
+# one can use ie. \git to bypass the wrapper function.
+alias git='GITWRAP'
+alias sudo='SUDOWRAP'
+alias cal='CALWRAP'
+# gcal defaults
+alias gcal="gcal -K --starting-day=Monday --iso-week-number=yes --type=special --cc-holidays=NO"
+alias gcaly='gcal -b 4'
+# Quickly initialize a git repo
+alias quickgitrepo="git init;git add .;git commit -m 'Initial commit';:"
+# Prettier perlcritic output
+alias perlcritic='perlcritic -verbose "%m at line %l. [%p] (Severity: %s)\n"'
+# Docs for perlcritic
+alias perlcriticdoc="OutputTermTitle perlcriticdoc; perl -e 'exec(\"perldoc\", \"Perl::Critic::Policy::\$ARGV[0]\")'"
+# A very simple REPL for Perl
+alias 'perl-repl'='if type tinyrepl &>/dev/null; then tinyrepl;else OutputTermTitle perl-repl; perl -MData::Dumper -MTerm::ReadLine -E '\''$r = Term::ReadLine->new(1);while(defined($_ = $r->readline("\$ "))){$ret=Dumper(eval($_));$err=$@;if($err ne ""){print $err;}else{print $ret;}}'\'';fi'
+# A quick and dirty httpd
+alias quickhttpdPERL='OutputTermTitle quickhttpdPERL; perl -MFile::MMagic -MHTTP::Server::Simple::CGI -e "my \$s = h->new(shift); \$s->run(); { package h; use base \"HTTP::Server::Simple::CGI\"; sub handle_request { my(\$s,\$c) =@_; my \$p = \$c->path_info; \$p =~ s/\.\.//g; my \$o = \"404 error\"; if (-d \"./\".\$p) { \$o = \"Is a directory\"; print \"HTTP/1.0 200 OK\r\n\"; } elsif(-e \"./\".\$p) { open(my \$i,\"<\",\"./\".\$p); print \"HTTP/1.0 200 OK\r\n\"; undef \$/; \$o = <\$i>; \$m = File::MMagic->new(); \$ft = \$m->checktype_filehandle(\$i); \$ft = \"text/css\" if \$p =~ /\.css\$/; } else { print \"HTTP/1.0 400 Not Found\r\n\"; }; print \$c->header(\$ft); binmode(STDOUT,\"binary\"); print \$o; };};"'
+alias quickhttpd='python -m SimpleHTTPServer'
+# Use gpg for myself by default, and enable the agent
+alias gpg='gpg --default-recipient-self --use-agent'
+# At using a higher priority queue by default
+alias at='at -q a'
+# Sorted version of 'atq'
+alias atqs='atq | sort -k 3'
+# Make acpi use celsius
+alias acpi='acpi -c'
+# Unset LESSOPEN for perldoc, if not it misunderstands files such as Gtk2::HBox
+alias perldoc='LESSOPEN="" perldoc'
+# List ip addresses this machine has
+alias iplist='/sbin/ifconfig|\grep "inet"|perl -pe "s/^\s+\w+(\s*addr?:|\s+)(\S+)\s.*/\$2/"'
+# List the public (internet-facing) IP address
+alias pubip="curl -s 'http://checkip.dyndns.com/' | perl -p -e 's#<[^>]+>##g; s#^\D+##g;s#\s+.*##g;chomp; if (! /^\s*\d+\.\d+\.\d+\.\d+\s*/) { \$_ = \"\" }'"
+# Make quota human-readable
+alias quota='quota -s'
+# I like the old vi-style keybindings for roguelikes
+alias zangband='zangband -r -mgcu -- -b'
+# In addition to that, ToME+angband tends to launch unneccesary terminals, so trick it into
+# thinking X isn't running.
+alias tome='OutputTermTitle ToME; DISPLAY="" tome -r -mgcu -- -b'
+alias angband='DISPLAY="" angband -mgcu -- -b'
+# I've got a bad tendency to type sh file, and some distros don't have /bin/bash as /bin/sh
+# thus rendering some scripts kaboom. I can always type \sh if I want the *real* sh
+alias sh='OutputTermTitle sh; bash'
+# Terminal size
+alias tsize='echo "$COLUMNS * $LINES"'
+# curl with wget-like syntax
+alias cget='curl -L -O -# -f -C -'
+# Paranoid wget
+alias pwget='wget -c --random-wait --retry-connrefused -t 0'
+# Paranoid wget with sane bwlimit (for my connection)
+alias plwget='pwget --limit-rate=1600k'
+# Paranoid wget pretending to be firefox/chrome
+alias pfwget="pwget -U 'Mozilla/5.0 (X11; U; Linux x86_64; en-GB; rv:1.9b4) Gecko/2008031318 Firefox/3.0b4'"
+alias pcwget='pwget -U "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.29 Safari/533.4"'
+# wget pretenting to be firefox/chrome
+alias fwget="wget -U 'Mozilla/5.0 (X11; U; Linux x86_64; en-GB; rv:1.9b4) Gecko/2008031318 Firefox/3.0b4'"
+alias cwget="wget -U 'Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.29 Safari/533.4'"
+# cget pretending to be firefox/chrome
+alias fcget="cget -A 'Mozilla/5.0 (X11; U; Linux x86_64; en-GB; rv:1.9b4) Gecko/2008031318 Firefox/3.0b4'"
+alias ccget="cget -A 'Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.29 Safari/533.4'"
+# Lynx (vi keys, trick it into thinking term is xterm, allow cookies, show rate, ignore rlogin)
+alias lynx="OutputTermTitle lynx; TERM=xterm lynx -vikeys -accept_all_cookies -rlogin -show_rate -nopause -partial -noprint -scrollbar -short_url"
+# Verbose rename
+alias rename='rename -v'
+# Perltidy that fits me better
+alias perltidy='perltidy -bl'
+alias rfree="perl -e '\$f = qx/free -m |grep Mem/; chomp(\$f); \$f =~ s/.*Mem:\s+//g; @info = split(/\s+/,\$f); \$t = \$info[0]; \$fr = \$info[2]; \$b = \$info[4]; \$c = \$info[5]; \$free = \$fr+\$b+\$c; \$used = \$t-\$free; printf(\"%s: %-15s %s: %s\n\",\"Used\",\$used.\" MB\",\"Free\",\$free.\" MB\");'"
+# A simple console clock
+alias clock="OutputTermTitle clock; perl -e '\$SIG{INT} = sub { print qq{\\n}; exit(0) };$| = 1; while(1) { print qq{\\r}; print q{ } for(1..30); print qq{\\r} . scalar(localtime());sleep(1)}'"
+# Useful to just enter 'bell' after a command to be notified when it is done
+alias bell='echo -ne "\a"'
+alias beep='bell'
+# Set a default charset for mysql
+alias mysql="mysql --default-character-set=utf8"
+# Use trickle in standalone mode
+alias trickle='trickle -s'
+# Default unzip params
+alias unzip="unzip -L"
+# Make rsyncable gzips
+alias gzip='gzip --rsyncable'
+# Package managers. Aliased to use PKGMANWRAP which corrects some typos
+alias 'apt-cache'='PKGMANWRAP apt-cache'
+alias aptitude='PKGMANWRAP aptitude'
+# Info
+alias info='info --vi-keys'
+# Force elinks to run in colour mode
+alias elinks='TERM="xterm-color" elinks'
+# Generate a random password
+alias genpw='perl -le "print map { (a..z,A..Z,0..9,\",\",\".\",\"/\",\"?\",\"%\",\"&\",\"#\",\":\",\"_\",\"=\",\"+\",\"@\",\"~\")[rand 75] } 0..(pop // 15)"'
+# nmon
+alias nmon='NMON=vcnmd nmon'
+# Include window borders when using import to get a screenshot
+alias import='import -frame'
+
+# Use dcfldd instead of dd where available, it provides status output etc.
+if type dcfldd &>/dev/null; then
+	alias dd='dcfldd sizeprobe=if'
+fi
+
+# Use GraphicsMagick over ImageMagick if installed
+if type gm &>/dev/null; then
+	alias import='gm import -frame'
+	for thing in display convert identify; do
+		alias $thing="gm $thing"
+	done
+fi
+
+# -- Aliases to make some /sbin stuff available as a user --
+for sbinCMD in ifconfig iwconfig iwlist; do
+	if [ -x "/sbin/$sbinCMD" ]; then
+		alias $sbinCMD="/sbin/$sbinCMD"
+	fi
+done
+
+#   - - - - - -
+#   Typo aliases
+#   - - - - - -
+
+alias 'ls-la'='ls -la'
+alias 'ls-l'='ls -l'
+alias 'ls-lah'='ls -lah'
+alias 'cd..'='cd ..'
+alias 'cd~'="cd $HOME"
+alias fiel='file'
+alias 'wc-l'='wc -l'
+alias clearls='clear;ls'
+alias xp='cp'
+alias chomd='chmod'
+
+# Function to allow multiple typo declerations on one line. First arg is
+# the real, following args are the typos
+function IsTypo
+{
+	TYPO=$1
+	shift 1
+	for typo in "$@"; do
+		alias $typo=$TYPO
+	done
+}
+IsTypo cd scd ccd d lcd
+IsTypo ls sl l rls os ks lq LS
+IsTypo grep gre gerp grpe
+IsTypo make mkae nake maek
+IsTypo sudo sudi sduo suvo sydi sudop
+IsTypo vim vmi ivm vun vium im
+IsTypo clear clera claer clea cler celar lear lcear clar ckear
+
+# ----------------
+# Function aliases
+# ----------------
+
+# A pgrep that actually works
+function psauxgrep () {
+	ps aux | grep -i "$@" | perl -ne 'next if /grep/; s/^(\S+)\s+(\S+)\s+.*/$2/;print'
+}
+# Wrapper around 'cal' that attempts a sane output everywhere
+function CALWRAP ()
+{
+	if type gcal &>/dev/null; then
+		# Used to emulate cal's -y parameter for displaying
+		# an entire year
+		EXTRA_ARGS=""
+		if [ "$1" = "-y" ]; then
+			shift
+			EXTRA_ARGS="-b 4"
+		fi
+		 LANGUAGE="nn_NO:nn:no_NO:no:nb_NO:nb:en" gcal --starting-day=Monday --iso-week-number=yes --type=special "$@" $EXTRA_ARGS
+	elif type ccal &>/dev/null; then
+		\ccal -noc -e -nod "$@"
+	elif [ "$BASH_VERSINFO" -gt '3' ] && type ncal &>/dev/null; then
+		\ncal -wMb "$@"
+	else
+		\cal -m "$@"
+	fi
+}
+# Simple git wrapper
+function GITWRAP ()
+{
+	OutputTermTitle "git $1"
+	if [ "$1" = 'stat' ]  || [ "$1" = 'status' ] || [ "$1" = 'stash' ]; then
+		GIT_PAGER='cat' \git "$@"
+	elif [ "$1" = 'logs' ]; then
+		shift
+		\git log --stat "$@"
+    elif [ "$1" = 'wdiff' ]; then
+        shift
+        GIT_PAGER='less' \git diff --color-words
+	else
+		\git "$@"
+	fi
+}
+# Simple apt-cache/aptitude/yum wrapper
+function PKGMANWRAP ()
+{
+	OutputTermTitle "$1"
+	local CMD="$1"
+	if [ "$2" = 'serach' ]; then
+		shift;shift;
+		"$CMD" 'search' "$@"
+	else
+		"$@"
+	fi
+}
+# Wrap any command into a paging mode
+function lessiFy ()
+{
+	local APP=$1;shift
+	OutputTermTitle $1
+	"$APP" "$@" | less
+}
+# Sudo wrapper
+function SUDOWRAP ()
+{
+	OutputTermTitle "sudo: $1"
+	if [ "$SSH_CLIENT" != "" ] && [ "$1" = "-s" ]; then
+		\sudo "SSH_CLIENT=$SSH_CLIENT" "$@"
+	else
+		\sudo "$@"
+	fi
+}
+# safe unzip wrapper that unzips to subdirectory
+function unzipd ()
+{
+    DIR="$(basename "$1"|perl -pi -e 's/\.\S+$//')"
+    if [ ! -e "$1" ]; then
+        echo "unzipd: $1: does not exist"
+        return 1
+    fi
+    unzip -d "$DIR" "$1" -x __MACOSX'/*'
+}
+# Open manpages with vim
+vman() {
+  vim -c "SuperMan $*"
+
+  if [ "$?" != "0" ]; then
+    echo "No manual entry for $*"
+  fi
+}
+
+# -----------------------------------------------------------------------
+# Some environment settings that can't be in env_shared due to load order
+# -----------------------------------------------------------------------
+
+# LS COLORS from solarized dircolors - https://raw.github.com/seebi/dircolors-solarized/master/dircolors.ansi-dark
+# (with some stuff removed, like highlighting temporary files)
+export LS_COLORS='no=00:fi=00:di=36:ln=target:pi=30;44:so=35;44:do=35;44:bd=33;44:cd=37;44:or=31:mi=31:ex=01;31:*.cmd=01;31:*.exe=01;31:*.com=01;31:*.bat=01;31:*.reg=01;31:*.app=01;31:*.txt=32:*.org=32:*.md=32:*.mkd=32:*.h=32:*.c=32:*.C=32:*.cc=32:*.cpp=32:*.cxx=32:*.objc=32:*.sh=32:*.csh=32:*.zsh=32:*.el=32:*.vim=32:*.java=32:*.pl=32:*.pm=32:*.py=32:*.rb=32:*.hs=32:*.php=32:*.htm=32:*.html=32:*.shtml=32:*.xml=32:*.rdf=32:*.css=32:*.js=32:*.man=32:*.0=32:*.1=32:*.2=32:*.3=32:*.4=32:*.5=32:*.6=32:*.7=32:*.8=32:*.9=32:*.l=32:*.n=32:*.p=32:*.pod=32:*.tex=32:*.bmp=33:*.cgm=33:*.dl=33:*.dvi=33:*.emf=33:*.eps=33:*.gif=33:*.jpeg=33:*.jpg=33:*.JPG=33:*.mng=33:*.pbm=33:*.pcx=33:*.pdf=33:*.pgm=33:*.png=33:*.ppm=33:*.pps=33:*.ppsx=33:*.ps=33:*.svg=33:*.svgz=33:*.tga=33:*.tif=33:*.tiff=33:*.xbm=33:*.xcf=33:*.xpm=33:*.xwd=33:*.xwd=33:*.yuv=33:*.aac=33:*.au=33:*.flac=33:*.mid=33:*.midi=33:*.mka=33:*.mp3=33:*.mpa=33:*.mpeg=33:*.mpg=33:*.ogg=33:*.ra=33:*.wav=33:*.anx=33:*.asf=33:*.avi=33:*.axv=33:*.flc=33:*.fli=33:*.flv=33:*.gl=33:*.m2v=33:*.m4v=33:*.mkv=33:*.mov=33:*.mp4=33:*.mp4v=33:*.mpeg=33:*.mpg=33:*.nuv=33:*.ogm=33:*.ogv=33:*.ogx=33:*.qt=33:*.rm=33:*.rmvb=33:*.swf=33:*.vob=33:*.wmv=33:*.doc=32:*.docx=34:*.rtf=34:*.dot=34:*.dotx=34:*.xls=34:*.xlsx=34:*.ppt=34:*.pptx=34:*.fla=34:*.psd=34:*.7z=1;35:*.apk=1;35:*.arj=1;35:*.bin=1;35:*.bz=1;35:*.bz2=1;35:*.cab=1;35:*.deb=1;35:*.dmg=1;35:*.gem=1;35:*.gz=1;35:*.iso=1;35:*.jar=1;35:*.msi=1;35:*.rar=1;35:*.rpm=1;35:*.tar=1;35:*.tbz=1;35:*.tbz2=1;35:*.tgz=1;35:*.tx=1;35:*.war=1;35:*.xpi=1;35:*.xz=1;35:*.z=1;35:*.Z=1;35:*.zip=1;35:*.ANSI-30-black=30:*.ANSI-01;30-brblack=01;30:*.ANSI-31-red=34:*.ANSI-01;31-brred=01;31:*.ANSI-32-green=32:*.ANSI-01;32-brgreen=01;32:*.ANSI-33-yellow=33:*.ANSI-01;33-bryellow=01;33:*.ANSI-34-blue=34:*.ANSI-01;34-brblue=01;34:*.ANSI-35-magenta=35:*.ANSI-01;35-brmagenta=01;35:*.ANSI-36-cyan=36:*.ANSI-01;36-brcyan=01;36:*.ANSI-37-white=37:*.ANSI-01;37-brwhite=01;37:*.log=01;32:*#=01;32:*.bak=01;33:*.BAK=01;33:*.old=01;33:*.OLD=01;33:*.org_archive=01;33:*.off=01;33:*.OFF=01;33:*.dist=01;33:*.DIST=01;33:*.orig=01;33:*.ORIG=01;33:*,v=01;33:*.gpg=34:*.gpg=34:*.pgp=34:*.asc=34:*.3des=34:*.aes=34:*.enc=34:';
+
+# Repair TERM on Mandriva
+if [ "$MDV_MENU_STYLE" != "" ]; then
+    if [ "$TERM" = "screen-bce" ]; then
+        export TERM="screen"
+    fi
+fi

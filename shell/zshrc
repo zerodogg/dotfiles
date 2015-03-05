@@ -1,0 +1,117 @@
+# ===============================================================
+# zshrc
+# Eskild Hustvedt
+# ===============================================================
+HISTFILE=~/.zsh_history
+# Save 2000 lines of history
+HISTSIZE=2000
+SAVEHIST=2000
+# Don't save duplicates in the history
+setopt histignorealldups
+# Don't save commands to the history file if they begin with a space
+setopt histignorespace
+# Use vi-like keybindings
+bindkey -v
+# Bind ^R to backwards search anyway (I am too used to it)
+bindkey '^R' history-incremental-search-backward
+# Bind ^N to autocomplete
+bindkey '^N' expand-or-complete
+
+# Enable completion
+autoload -Uz compinit
+compinit
+# rsync completion
+compdef cpr=rsync
+compdef cprn=rsync
+compdef ncpr=rsync
+compdef ncprn=rsync
+setopt completealiases
+# Better 'kill' completion
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+# Allow the completer to do some additonal magic:
+#  _expand      = expands commands
+#  _complete    = normal completion
+#  _correct     = corrects spelling mistakes
+#  _approximate = corrects mistakes (ie. aptget<tab> = apt-get)
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+# Enable completion cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh_compcache
+# Don't attempt to correct spelling mistakes in commands if the command doesn't
+# exist
+setopt nocorrect
+# Allow comments in interactive shells
+setopt interactive_comments
+# Enable short loops
+setopt shortloops
+# Complete vman like man
+compdef vman="man"
+
+# zsh-specific aliases
+alias rmtemp='\rm -fv *~'
+
+# Source shared aliases and settings
+[ -e ~/.shell_shared ] && source ~/.shell_shared
+
+# Set prompt
+_TERMTITLE_BASE=""
+if [[ "$SCHROOT_UID" != "" ]]; then
+    PS1='[%? chroot %n@%m %1~]%(!.#.$) '
+    _TERMTITLE_BASE="[c] "
+else
+    PS1='[%? %n@%m %1~]%(!.#.$) '
+fi
+# The timeout in n/10th of a second to wait for additional keys to be hit.
+# Reduced here in order to not have to wait for normal mode
+KEYTIMEOUT=1
+
+# Include hostname (and possibly username) when under ssh
+if [ "$SSH_CLIENT" != "" ]; then
+	_TERMTITLE_BASE="${HOST%%.*}:"
+	# If we're not zerodogg or eskild, and /home/zerodogg exists, include the
+	# username in the title
+	if [ "$USER" != "zerodogg" ] && [ "$USER" != "eskild" ] && [ -d "/home/zerodogg" ]; then
+		_TERMTITLE_BASE="$USER@$_TERMTITLE_BASE"
+	fi
+fi
+# Function for outputting a terminal title
+function OutputTermTitle
+{
+    case $TERM in
+    xterm*|rxvt*|gnome*|konsole*)
+        print -Pn "\e]0;$_TERMTITLE_BASE${@}\007";;
+    screen*)
+        print -Pn "\ek$_TERMTITLE_BASE${@}\e\\";;
+    esac
+}
+# Callbacks for pre-exec and pre-cmd
+function preexec
+{
+    OutputTermTitle "$1"
+}
+function precmd
+{
+    OutputTermTitle "${PWD/$HOME/~}"
+}
+
+# Enable 'command-not-found' if it exists
+if [ -e "/etc/zsh_command_not_found" ]; then
+	source "/etc/zsh_command_not_found"
+fi
+
+# Source "desktop" zshrc if it exists
+if [ -e "$HOME/.zshrc_desktop" ]; then
+	source "$HOME/.zshrc_desktop"
+fi
+# And finally, source host-specific changes if any
+# This is useful because it lets me quickly copy all new changes in the zshrc
+# to all the machines I use, while still being able to make any host-specific
+# changes (ie. set EMAIL to something other than the default)
+if [ -e "$HOME/.zshrc_local" ]; then
+	source "$HOME/.zshrc_local"
+fi
+if [ -e "$HOME/.shell_shared_local" ]; then
+	source "$HOME/.shell_shared_local"
+fi
+# Succeed
+:

@@ -1,0 +1,94 @@
+#!/bin/bash
+#!/bin/zsh
+# ^- Must work in both
+
+# ===============================================================
+# shell_shared_desktop
+# Eskild Hustvedt
+# ===============================================================
+# This file contains shared aliases and functions that work both under
+# zsh and bash that should only be available on desktops.
+
+# Don't want any of that now do we?
+alias emacs='vim'
+if [ "$SSH_CLIENT" = "" ] && type vimx &>/dev/null; then
+    alias vim='LC_ALL=C vimx -p'
+fi
+# Use xterm-256color when in gnome-terminal using the xterm TERM
+if [ "$COLORTERM" = "gnome-terminal" ] || [ "$VTE_VERSION" -ge "0380" ]; then
+    if [ "$TERM" = "xterm" ]; then
+        export TERM="xterm-256color"
+    fi
+fi
+# My own commands on arch
+if [ -e /etc/arch-release ]; then
+    export PATH="$HOME/bin:$HOME/.bin:$HOME/.local/bin:$PATH:/usr/games"
+fi
+# Make mplayer go fullscreen and zoom by default
+if [ -e /etc/fedora-release ]; then
+    alias mplayer='mplayer -fs -zoom -ao pulse,alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
+else
+    alias mplayer='mplayer -fs -zoom -ao alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
+fi
+# Mplayer for streaming
+alias smplayer='mplayer -cache 8192'
+# cdrecord
+alias cdrecord='wodim'
+alias wodim='wodim -eject -v'
+# Make them verbose by default
+alias ogg123='ogg123 -vv'
+alias mpg321='mpg321 -vv'
+alias mpg123='mpg123 -vv'
+# oggenc with 320 as bitrate by default
+alias oggenc="oggenc -b 320"
+# PKGMANWRAP for yum
+alias yum='PKGMANWRAP yum'
+# Defaults for jack
+alias jack='jack --query-now --rename --force --remove-files --bitrate 320 --encoder-name oggenc --encoders 2 '
+# Defaults for ripit
+alias ripit="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 2 --quality off --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
+alias 'ripit-ogg'="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 1 --quality off --oggencopt '-b 320' --eject --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
+# Less is more
+alias more='less'
+# Date in debian changelog format
+alias debdate="LC_ALL=C date +'%a,  %d %b %Y %T %z'"
+# Output a date in the normal Norwegian date format
+alias nodate="date '+%d.%m.%Y'"
+# Alias for EST time
+alias finkdate='TZ=EST date'
+# Scan the wlan as a user and filter out junk
+alias iwscan="if type nmcli &>/dev/null; then nmcli device wifi rescan; sleep 1s;nmcli -p device wifi list; else /sbin/iwlist scan 2>&1|/bin/egrep -v '(lo|eth0|sit0)'|/bin/grep -v '^\s*\$';fi"
+# Proper vnc viewer
+if type ssvncviewer &>/dev/null; then
+	alias vncviewer='ssvncviewer'
+elif type xtightvncviewer &>/dev/null; then
+	alias vncviewer='xtightvncviewer'
+else
+    alias cvncviewer="vncviewer -QualityLevel=1 -CompressLevel=6"
+fi
+# Newer mysql clients don't have readline, so add it back if we can
+if type rlwrap &>/dev/null; then
+    alias mysql='mysql rlwrap -H ~/.mysql_history.rlwrap -a mysql'
+fi
+# youtube-dl with sane defaults
+alias 'youtube-dl'='youtube-dl --continue --no-part -t --max-quality 22'
+# youtube-dl with SD quality
+alias 'youtube-sd'='youtube-dl --max-quality 44'
+# Disable translations in pacaur
+alias pacaur='LC_ALL=C pacaur'
+
+# Quick command to remount broken nfs mounts
+function remountNFS ()
+{
+    for mount in $(df 2>&1 | \grep Stale|perl -pi -e "s/^df:\s+\S(\S+)\'.+/\$1/"); do
+        sudo umount -l $mount
+        sudo mount $mount
+    done
+}
+# Quick commant to *mount* NFS mounts
+function mountNFS ()
+{
+    for mount in $(grep nfs /etc/fstab|grep user|grep -v noused|perl -pi -e 's/^\S+\s+(\S+)\s+.+/$1/'); do
+        mount "$mount"
+    done
+}
