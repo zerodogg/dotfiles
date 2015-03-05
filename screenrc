@@ -1,0 +1,84 @@
+# ===============================================================
+# screenrc
+# Eskild Hustvedt
+# ===============================================================
+
+# My hardstatus line
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{.kW}%-w%{.wK}%n %t%{-}%+w %="
+
+bind T hardstatus string "%{.kW}%-w%{.wK}%n %t%{-}%+w %-06=%c"
+bind N hardstatus string "%{.kW}%-w%{.wK}%n %t%{-}%+w %="
+
+# Use utf8 by default
+defutf8 on
+
+# Larger scrollback
+defscrollback 3000
+
+# Nethack-style messages :)
+nethack on
+
+# If a window goes unresponsive, don't block the whole session waiting for it.
+nonblock on
+
+# Terminal resizing
+bind = resize =
+bind + resize +1
+bind - resize -1
+
+# Reload the .screenrc
+bind 'R' source $HOME/.screenrc
+
+# I hate bells.
+vbell off
+
+# Don't display the copyright page
+startup_message off
+
+# Detach on hangup. Smart in order to leave stuff running.
+autodetach on
+
+# Want alternative screen support on. Like in xterms.
+altscreen on
+# Use bce to ensure mutt and friends work as expected without
+# space padding to the end of the line
+defbce on
+term screen-bce
+#term screen
+
+# This keeps messing up my irssi
+bind r
+bind ^r
+bind R
+bind ^R
+
+# c-a q for focusing win 10, w for 11 etc.
+bind q select 10
+bind w select 11
+bind e select 12
+bind r select 13
+
+# Simpler focus management - useful when there's more than two regions
+bind k focus up
+bind j focus down
+
+# Keybindings I don't need or want
+bind .	 # Writes a termcap file
+
+# Dangerous keybindings
+bind s	 # Will make screen hang if run
+bind ^k  # Kills the terminal, C-a K is better
+bind ^\	 # Kills ALL windows and exits screen
+bind \\  # Ditto
+
+# Make them better
+bind 'K' kill
+
+# Solarized colors
+caption string "%{wG}%3n %t"
+hardstatus string "%{.kW}%-w%{Gw}%n %t%{-}%+w %="
+
+bind T hardstatus string "%{.kW}%-w%{Gw}%n %t%{-}%+w %-06=%c"
+bind N hardstatus string "%{.kW}%-w%{Gw}%n %t%{-}%+w %="

@@ -1,0 +1,13 @@
+# ===============================================================
+# screenrc-start
+# File to launch a session of screen
+# Eskild Hustvedt
+# vim: ft=screen:
+# ===============================================================
+
+source $HOME/.screenrc-startbasic
+
+split
+focus bottom
+select 10
+resize 7
