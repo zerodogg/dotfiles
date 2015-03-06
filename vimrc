@@ -290,7 +290,7 @@ map! <S-Insert> <MiddleMouse>
 " Use F10 to toggle paste mode
 set pastetoggle=<F10>
 " I :w often - this is quicker
-nnoremap W :w<CR>
+nnoremap <leader>w :w<CR>
 " Copy to clipboard with <Leader>y, paste with <Leader>p
 vmap <Leader>y "+y
 nmap <Leader>p "*p
