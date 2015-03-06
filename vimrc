@@ -303,6 +303,8 @@ nmap <Leader>ww <Plug>VimwikiIndex
 if maparg('<C-L>', 'n') ==# ''
   nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 endif
+" Disable Q-to-enter-Ex-mode
+nnoremap Q <nop>
 "}}}
 
 " Autocommands"{{{
