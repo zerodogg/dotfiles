@@ -375,3 +375,6 @@ if [ "$MDV_MENU_STYLE" != "" ]; then
         export TERM="screen"
     fi
 fi
+
+# Disable software flow control
+stty -ixon
