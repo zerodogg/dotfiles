@@ -165,6 +165,10 @@ runtime macros/matchit.vim
 " pattern on.
 syntax on
 set hlsearch
+" Enable smart tab
+set smarttab
+" Enable enhanced command-line completion
+set wildmenu
 " Wrap text
 set wrap
 " Fold at syntax level
@@ -295,6 +299,10 @@ nmap <Leader>P "+P
 vmap <Leader>P "+P
 " Start the vim wiki
 nmap <Leader>ww <Plug>VimwikiIndex
+" Use <C-L> to clear the highlighting of :set hlsearch.
+if maparg('<C-L>', 'n') ==# ''
+  nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+endif
 "}}}
 
 " Autocommands"{{{
