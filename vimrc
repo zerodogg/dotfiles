@@ -46,22 +46,30 @@ endif "}}}
 
 " Bundles"{{{
     " Additional and improved filetypes {{{
-        " Various
+        " Better markdown support
 NeoBundle 'tpope/vim-markdown'
+        " iCalendar syntax
 NeoBundle 'vim-scripts/icalendar.vim'
+        " Enhanced po-editing
 NeoBundle 'vim-scripts/po.vim--Jelenak'
+        " LaTeX support
 NeoBundle 'lervag/vim-latex'
+        " GTK and SQlite hilight
 NeoBundle 'vim-scripts/gtk-vim-syntax'
 NeoBundle 'vim-scripts/sqlite_c'
+        " Ruby syntax
 NeoBundle 'vim-ruby/vim-ruby'
+        " An excellent outline format for vim
 NeoBundle 'vimoutliner/vimoutliner.git'
+        " Table-like CSV view
 NeoBundleLazy 'chrisbra/csv.vim', { 'filetypes':'csv' }
         " systemd syntax
 NeoBundle 'Matt-Deacalion/vim-systemd-syntax'
-            " Perl (also loads perlomni later)
+        " Perl (also loads perlomni later)
 NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':'perl' }
 NeoBundle 'zerodogg/vim-mason'
-            " HTML/CSS/web
+        " Web (HTML5, JavaScript, JSON, CSS, plus SCSS, tag auto-close,
+        "  mustache)
 NeoBundle 'othree/html5.vim'
 NeoBundle 'jelera/vim-javascript-syntax'
 NeoBundle 'jiangmiao/simple-javascript-indenter'
