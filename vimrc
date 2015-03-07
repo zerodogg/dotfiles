@@ -200,7 +200,7 @@ set noshowcmd
 " Do incremental searching
 set incsearch
 " Indenting looks nicer with this
-set tabstop=4 shiftwidth=4
+set tabstop=4 shiftwidth=4 softtabstop=4
 " Expand tabs
 set expandtab
 " Scroll if we're 5 or less lines near the top/bottom of the screen
