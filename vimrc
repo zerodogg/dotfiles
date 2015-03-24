@@ -260,6 +260,10 @@ autocmd InsertLeave * let &l:foldmethod=w:last_fdm
 let g:extra_whitespace_ignored_filetypes = [ 'unite', 'vimfiler', 'vimshell', 'diff', 'gitcommit', 'mail', 'help', '' ]
 " The vim wiki path
 let g:vimwiki_list = [{'path': '~/Documents/wiki/'} ]
+" Use ag in unite grep source.
+let g:unite_source_grep_command = 'ag'
+let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden --ignore ''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
+let g:unite_source_grep_recursive_opt = ''
 "}}}
 
 " Keymappings and commands"{{{
@@ -296,6 +300,8 @@ map <Leader>f :VimFiler -columns=type -toggle -split -winwidth=40<cr>
 map <Leader>b :Unite -buffer-name=buffers -vertical -direction=botright -toggle -winwidth=40 buffer<cr>
 " Toggle a search window
 nmap <Leader>s :Unite -custom-line-enable-highlight -start-insert -ignorecase line<CR>
+" Toggle a grep/ack/ag window
+nnoremap <Leader>g :<C-u>Unite -no-split -silent -buffer-name=ag grep<CR>
 " Use shift-insert as MiddleMouse, ie. to paste (like in xterm)
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
