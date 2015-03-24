@@ -53,7 +53,7 @@ NeoBundle 'vim-scripts/icalendar.vim'
         " Enhanced po-editing
 NeoBundle 'vim-scripts/po.vim--Jelenak'
         " LaTeX support
-NeoBundle 'lervag/vim-latex'
+NeoBundle 'LaTeX-Box-Team/LaTeX-Box'
         " GTK and SQlite hilight
 NeoBundle 'vim-scripts/gtk-vim-syntax'
 NeoBundle 'vim-scripts/sqlite_c'
@@ -397,6 +397,11 @@ autocmd FileType tex setlocal foldnestmax=20
 autocmd FileType tex setlocal tw=80
 " Ignore a few chktex warnings
 let g:syntastic_tex_chktex_args = '-n 8 -n 1 -n 44'
+" Enable completion
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.tex = '\v\\\a*(ref|cite)\a*([^]]*\])?\{(|[^}]*,)'
 "}}}
 " --- Markdown settings ---"{{{
 " Filetype detection
