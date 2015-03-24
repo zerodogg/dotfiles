@@ -65,9 +65,13 @@ NeoBundle 'vimoutliner/vimoutliner.git'
 NeoBundleLazy 'chrisbra/csv.vim', { 'filetypes':'csv' }
         " systemd syntax
 NeoBundle 'Matt-Deacalion/vim-systemd-syntax'
+        " dokuwiki syntax
+NeoBundle 'nblock/vim-dokuwiki'
         " Perl (also loads perlomni later)
 NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':'perl' }
 NeoBundle 'zerodogg/vim-mason'
+        " todo.txt
+NeoBundle 'freitass/todo.txt-vim'
         " Web (HTML5, JavaScript, JSON, CSS, plus SCSS, tag auto-close,
         "  mustache)
 NeoBundle 'othree/html5.vim'
@@ -465,11 +469,17 @@ silent! let g:vo_fold_length=79
 autocmd! FileType scss syntax sync minlines=1000
 "}}}
 " --- vimwiki ---"{{{
-autocmd! FileType vimwiki setlocal foldlevel=1 concealcursor=n conceallevel=2
+autocmd! FileType vimwiki setlocal foldlevel=1 concealcursor=n conceallevel=2 tw=79
 " Disable conceal in insert mode, and disable concealcursor after having been
 " in insert mode
 autocmd FileType vimwiki :autocmd InsertEnter <buffer> setlocal conceallevel=0
 autocmd FileType vimwiki :autocmd InsertLeave <buffer> setlocal conceallevel=2 concealcursor=""
+"}}}
+" --- todo.txt ---"{{{
+autocmd FileType todo nnoremap <script> <silent> <buffer> <leader>S :sort<CR>
+autocmd FileType todo nnoremap <script> <silent> <buffer> <leader>S@ :sort /.\{-}\ze@/ <CR>
+autocmd FileType todo nnoremap <script> <silent> <buffer> <leader>S+ :sort /.\{-}\ze+/ <CR>
+autocmd FileType todo nnoremap <script> <silent> <buffer> <leader>b :call TodoTxtPrioritizeAdd('B')<CR>
 "}}}
 "1}}}
 
