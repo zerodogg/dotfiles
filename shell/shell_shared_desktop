@@ -71,9 +71,9 @@ if type rlwrap &>/dev/null; then
     alias mysql='mysql rlwrap -H ~/.mysql_history.rlwrap -a mysql'
 fi
 # youtube-dl with sane defaults
-alias 'youtube-dl'='youtube-dl --continue --no-part -t --max-quality 22'
+alias 'youtube-dl'='youtube-dl --continue --no-part -t --format "best[height=720]/best"'
 # youtube-dl with SD quality
-alias 'youtube-sd'='youtube-dl --max-quality 44'
+alias 'youtube-sd'='youtube-dl --format "best[width<=720]"'
 # Disable translations in pacaur
 alias pacaur='LC_ALL=C pacaur'
 
