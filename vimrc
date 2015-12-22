@@ -81,6 +81,7 @@ NeoBundle 'mustache/vim-mustache-handlebars'
 NeoBundle 'elzr/vim-json'
 NeoBundleLazy 'amirh/HTML-AutoCloseTag', { 'filetypes':'html' }
 NeoBundle 'cakebaker/scss-syntax.vim'
+NeoBundle 'groenewege/vim-less'
 NeoBundle 'JulesWang/css.vim' "}}}
     " Programming and editing utilities {{{
             " Git utilities
