@@ -220,7 +220,7 @@ alias import='import -frame'
 
 # Use dcfldd instead of dd where available, it provides status output etc.
 if type dcfldd &>/dev/null; then
-	alias dd='dcfldd sizeprobe=if'
+	alias dd='dcfldd sizeprobe=if statusinterval=10'
 fi
 
 # Use GraphicsMagick over ImageMagick if installed
