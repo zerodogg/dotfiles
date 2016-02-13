@@ -463,10 +463,7 @@ autocmd BufNewFile,BufRead *.mjs set ft=mason
 autocmd FileType mason so $VIMRUNTIME/ftplugin/html.vim
 "}}}
 " --- JavaScript ---"{{{
-"  Use this manual folding if no additional javascript syntax stuff is
-"  installed
-autocmd FileType javascript setlocal foldmethod=syntax foldlevel=0
-autocmd FileType javascript call JavaScriptFold()
+au FileType javascript call JavaScriptFold()
 "}}}
 " --- Other filetype detection ---"{{{
 autocmd BufNewFile,BufRead Makefile.cfg set ft=make
