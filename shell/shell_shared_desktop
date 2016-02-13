@@ -30,6 +30,9 @@ if [ -e /etc/fedora-release ]; then
 else
     alias mplayer='mplayer -fs -zoom -ao alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
 fi
+if type mpv &>/dev/null; then
+    alias mplayer='echo "using mpv"; mpv'
+fi
 # Mplayer for streaming
 alias smplayer='mplayer -cache 8192'
 # cdrecord
