@@ -73,16 +73,21 @@ NeoBundleLazy 'vim-perl/vim-perl', { 'filetypes':[ 'perl6' ], 'name':'vim-perl6'
 NeoBundle 'zerodogg/vim-mason'
         " todo.txt
 NeoBundle 'freitass/todo.txt-vim'
+NeoBundle 'elentok/todo.vim'
         " Web (HTML5, JavaScript, JSON, CSS, plus SCSS, tag auto-close,
-        "  mustache)
+        "  mustache, eco templates)
 NeoBundle 'othree/html5.vim'
 NeoBundle 'jelera/vim-javascript-syntax'
 NeoBundle 'jiangmiao/simple-javascript-indenter'
+NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'mustache/vim-mustache-handlebars'
 NeoBundle 'elzr/vim-json'
 NeoBundleLazy 'amirh/HTML-AutoCloseTag', { 'filetypes':'html' }
 NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'briancollins/vim-jst'
+NeoBundle 'AndrewRadev/vim-eco'
 NeoBundle 'JulesWang/css.vim' "}}}
     " Programming and editing utilities {{{
             " Git utilities
