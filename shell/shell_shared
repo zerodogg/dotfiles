@@ -141,7 +141,7 @@ alias perlcriticdoc="OutputTermTitle perlcriticdoc; perl -e 'exec(\"perldoc\", \
 alias 'perl-repl'='if type reply &>/dev/null; then reply; elif type tinyrepl &>/dev/null; then tinyrepl;else OutputTermTitle perl-repl; perl -MData::Dumper -MTerm::ReadLine -E '\''$r = Term::ReadLine->new(1);while(defined($_ = $r->readline("\$ "))){$ret=Dumper(eval($_));$err=$@;if($err ne ""){print $err;}else{print $ret;}}'\'';fi'
 # A quick and dirty httpd
 alias quickhttpdPERL='OutputTermTitle quickhttpdPERL; perl -MFile::MMagic -MHTTP::Server::Simple::CGI -e "my \$s = h->new(shift); \$s->run(); { package h; use base \"HTTP::Server::Simple::CGI\"; sub handle_request { my(\$s,\$c) =@_; my \$p = \$c->path_info; \$p =~ s/\.\.//g; my \$o = \"404 error\"; if (-d \"./\".\$p) { \$o = \"Is a directory\"; print \"HTTP/1.0 200 OK\r\n\"; } elsif(-e \"./\".\$p) { open(my \$i,\"<\",\"./\".\$p); print \"HTTP/1.0 200 OK\r\n\"; undef \$/; \$o = <\$i>; \$m = File::MMagic->new(); \$ft = \$m->checktype_filehandle(\$i); \$ft = \"text/css\" if \$p =~ /\.css\$/; } else { print \"HTTP/1.0 400 Not Found\r\n\"; }; print \$c->header(\$ft); binmode(STDOUT,\"binary\"); print \$o; };};"'
-alias quickhttpd='python -m SimpleHTTPServer'
+alias quickhttpd='python2 -m SimpleHTTPServer'
 # Use gpg for myself by default, and enable the agent
 alias gpg='gpg --default-recipient-self --use-agent'
 # At using a higher priority queue by default
