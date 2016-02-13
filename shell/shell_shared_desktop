@@ -79,6 +79,8 @@ alias 'youtube-dl'='youtube-dl --continue --no-part -t --format "best[height=720
 alias 'youtube-sd'='youtube-dl --format "best[width<=720]"'
 # Disable translations in pacaur
 alias pacaur='LC_ALL=C pacaur'
+# Defaults for "feh", an image viewer
+alias feh="feh -. -d"
 
 # Quick command to remount broken nfs mounts
 function remountNFS ()
