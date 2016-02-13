@@ -68,7 +68,8 @@ NeoBundle 'Matt-Deacalion/vim-systemd-syntax'
         " dokuwiki syntax
 NeoBundle 'nblock/vim-dokuwiki'
         " Perl (also loads perlomni later)
-NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':'perl' }
+NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':[ 'perl' ] }
+NeoBundleLazy 'vim-perl/vim-perl', { 'filetypes':[ 'perl6' ], 'name':'vim-perl6' }
 NeoBundle 'zerodogg/vim-mason'
         " todo.txt
 NeoBundle 'freitass/todo.txt-vim'
@@ -359,6 +360,7 @@ let g:po_lang_team="Norwegian Nynorsk <i18n-no@lister.ping.uio.no>"
 " -- Perl settings --"{{{
 " Enable perl folding by default
 let perl_fold = 1
+let perl6_fold = 1
 " Highlight POD
 let perl_include_pod = 1
 " Compiler
