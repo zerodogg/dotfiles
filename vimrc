@@ -202,8 +202,8 @@ set fileencoding=utf-8
 set encoding=UTF-8
 " Keep a backup file
 set backup
-" Keep 50 lines of command line history
-set history=50
+" Keep 250 lines of command line history
+set history=250
 " Show the cursor position at all times
 set ruler
 " Display incomplete commands
