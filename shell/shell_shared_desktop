@@ -97,3 +97,23 @@ function mountNFS ()
         mount "$mount"
     done
 }
+# A command to forward local ssh to another server
+function forwardSSH ()
+{
+    local target=""
+    local port="9322"
+    local connectPort=""
+    if [ "$1" != "" ]; then
+        port="$1"
+    else
+        echo "forwardSSH: a target is required"
+        return 1
+    fi
+    if [ "$2" != "" ]; then
+        target="$2"
+    fi
+    if [ "$3" != "" ]; then
+        target="-p $3"
+    fi
+    ssh -q -f -N -o Compression=yes -o ExitOnForwardFailure=yes -o ControlMaster=no -o ServerAliveCountMax=8 -o ServerAliveInterval=15 -o TCPKeepAlive=yes -o ForwardAgent=no -o ForwardX11=no $connectPort -R "$port":localhost:22 "$target"
+}
