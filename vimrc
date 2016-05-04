@@ -297,6 +297,12 @@ map ,u :s/^#//<CR><Esc>:nohlsearch<CR>
 command TODO :sil cclose | call setqflist([]) | exe 'g/TODO\|FIXME/caddexpr expand("%") . ":" . line(".") . ":" .getline(".")' | cw
 " New tab
 map <C-t> :tabnew<CR><Leader>m
+" Overrides the neomru default ignore pattern to not ignore files in /mnt
+let g:neomru#file_mru_ignore_pattern =
+      \'\~$\|\.\%(o\|exe\|dll\|bak\|zwc\|pyc\|sw[po]\)$'.
+      \'\|\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)'.
+      \'\|^\%(\\\\\|/media/\|/temp/\|/tmp/\|\%(/private\)\=/var/folders/\)'.
+      \'\|\%(^\%(fugitive\)://\)'
 " Ignore vim help files in neomru
 silent! call unite#custom#source('neomru/file','ignore_pattern','^\(/usr/share/vim/\|.*\.vim/bundle\)')
 " Open up the unite file searcher
