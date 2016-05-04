@@ -407,6 +407,8 @@ autocmd FileType gitcommit setlocal tw=0
 "}}}
 " -- LaTeX settings --"{{{
 let g:tex_fold_enabled=1
+" Set ft
+autocmd BufNewFile,BufRead *.tex set ft=tex
 " Enable spell checking
 autocmd FileType tex setlocal spell
 set spelllang=nn,en
