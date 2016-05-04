@@ -71,6 +71,8 @@ NeoBundle 'nblock/vim-dokuwiki'
 NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':[ 'perl' ] }
 NeoBundleLazy 'vim-perl/vim-perl', { 'filetypes':[ 'perl6' ], 'name':'vim-perl6' }
 NeoBundle 'zerodogg/vim-mason'
+        " Jinja2 syntax
+NeoBundle 'glench/vim-jinja2-syntax'
         " todo.txt
 NeoBundle 'freitass/todo.txt-vim'
 NeoBundle 'elentok/todo.vim'
@@ -471,6 +473,7 @@ au FileType javascript call JavaScriptFold()
 autocmd BufNewFile,BufRead Makefile.cfg set ft=make
 autocmd BufNewFile,BufRead *.run set ft=sh
 autocmd BufNewFile,BufRead *.tt++ set ft=tt
+autocmd BufNewFile,BufRead *.j2 set ft=jinja
 "}}}
 " --- Vimoutliner settings ---"{{{
 " Use dark background, set the filetype, enable folding
