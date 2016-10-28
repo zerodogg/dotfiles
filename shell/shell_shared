@@ -378,5 +378,7 @@ if [ "$MDV_MENU_STYLE" != "" ]; then
     fi
 fi
 
-# Disable software flow control
-stty -ixon
+# Disable software flow control in interactive shells
+if [[ $- == *i* ]]; then
+    stty -ixon
+fi
