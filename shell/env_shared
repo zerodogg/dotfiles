@@ -30,6 +30,8 @@ export RSYNC_RSH='ssh'
 export MANPATH="/usr/local/man:/usr/local/share/man:/usr/share/man:$HOME/.local/share/man:$MANPATH"
 # Limit the width of manpages
 export MANWIDTH='80'
+# Mosh escape sequence (C-shift-/)
+export MOSH_ESCAPE_KEY=""
 # Make less display the last line as white, remove blank lines
 export LESS='-wsR'
 if [ "$LESSOPEN" = '' ] && [ -x /usr/bin/lesspipe ]; then
