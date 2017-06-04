@@ -409,6 +409,8 @@ let c_no_comment_fold=1
 let c_no_block_fold=1
 let c_space_errors=0
 let c_gnu=1
+let g:syntastic_c_checkers = ["cppcheck","oclint" ]
+let g:syntastic_quiet_messages = { 'regex': 'The scope of the variable.*can be reduced' }
 "}}}
 " --- mail settings --"{{{
 autocmd FileType mail setlocal foldmethod=manual
