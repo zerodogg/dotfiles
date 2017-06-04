@@ -46,9 +46,8 @@ else
     alias vim='LC_ALL=C vim -p'
 fi
 # Vim bootstrapper
-alias vimbootstrap='initvimbootstrap; vim +NeoBundleInstall +q'
-alias initvimbootstrap='if [ ! -e ~/.vim/bundle/neobundle.vim ]; then mkdir -p ~/.vim/bundle; git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim;fi; vim +"NeoBundleUpdate! vimproc.vim" +q;'
-alias vimbootstrapbasic='initvimbootstrap; vim "+NeoBundleUpdate! vim-colors-solarized unite.vim neomru.vim" +q'
+alias vimbootstrap='initvimbootstrap; vim -c "try | call dein#update() | finally | qall! | endtry"'
+alias initvimbootstrap='if [ -e ~/.vim/bundle/neobundle.vim ]; then mv ~/.vim/bundle ~/.vim/bundle.old-nb;fi;if [ ! -e ~/.vim/bundle/repos/github.com/shougo/dein.vim ]; then mkdir -p ~/.vim/bundle/repos/github.com/shougo/dein.vim && git clone https://github.com/shougo/dein.vim ~/.vim/bundle/repos/github.com/shougo/dein.vim;fi'
 # Start vim in the wiki
 alias vimwiki='vim -c VimwikiIndex'
 # Persistent connection to a server. Uses autossh if available (which will

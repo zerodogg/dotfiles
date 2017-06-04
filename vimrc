@@ -24,154 +24,115 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-"NeoBundle boilerplate scripts-----------------------------{{{1
-" Install: mkdir -p ~/.vim/bundle && git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
-if has('vim_starting')
-  " Required:
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+" Bundles"{{{
+let &runtimepath.=','.expand('~/.vim/bundle/repos/github.com/shougo/dein.vim')
+if dein#load_state(expand('~/.vim/bundle/'))
+  call dein#begin(expand('~/.vim/bundle'))
+  call dein#add(expand('~/.vim/bundle/repos/github.com/shougo/dein.vim'))
+
+    " Additional and improved filetypes {{{
+        " Better markdown support
+    call dein#add('tpope/vim-markdown')
+        " iCalendar syntax
+    call dein#add('vim-scripts/icalendar.vim')
+        " Enhanced po-editing
+    call dein#add('vim-scripts/po.vim--Jelenak')
+        " LaTeX support
+    call dein#add('LaTeX-Box-Team/LaTeX-Box')
+        " GTK and SQlite hilight
+    call dein#add('vim-scripts/gtk-vim-syntax')
+    call dein#add('vim-scripts/sqlite_c')
+        " Ruby syntax
+    call dein#add('vim-ruby/vim-ruby')
+        " An excellent outline format for vim
+    call dein#add('vimoutliner/vimoutliner.git')
+        " Table-like CSV view
+    call dein#add( 'chrisbra/csv.vim', { 'lazy':1, 'on_ft':'csv' })
+        " systemd syntax
+    call dein#add('Matt-Deacalion/vim-systemd-syntax')
+        " dokuwiki syntax
+    call dein#add('nblock/vim-dokuwiki')
+        " Perl (also loads perlomni later)
+    call dein#add('vim-perl/vim-perl')
+    call dein#add('vim-perl/vim-perl6')
+    call dein#add('zerodogg/vim-mason')
+        " Jinja2 syntax
+    call dein#add('glench/vim-jinja2-syntax')
+        " todo.txt
+    call dein#add('freitass/todo.txt-vim')
+    call dein#add('elentok/todo.vim')
+        " Web (HTML5, JavaScript, JSON, CSS, plus SCSS, tag auto-close,
+        "  mustache, eco templates)
+    call dein#add('othree/html5.vim')
+    call dein#add('jelera/vim-javascript-syntax')
+    call dein#add('jiangmiao/simple-javascript-indenter')
+    call dein#add('othree/javascript-libraries-syntax.vim')
+    call dein#add('mustache/vim-mustache-handlebars')
+    call dein#add('elzr/vim-json')
+    call dein#add('amirh/HTML-AutoCloseTag', { 'lazy':1,'on_ft':'html' })
+    call dein#add('cakebaker/scss-syntax.vim')
+    call dein#add('groenewege/vim-less')
+    call dein#add('kchmck/vim-coffee-script')
+    call dein#add('briancollins/vim-jst')
+    call dein#add('AndrewRadev/vim-eco')
+    call dein#add('JulesWang/css.vim')"}}}
+    " Programming and editing utilities {{{
+            " Git utilities
+    call dein#add('tpope/vim-fugitive.git', { 'augroup' : 'fugitive'})
+    if(v:version < 702)
+            call dein#add('tpope/vim-git')
+    end
+            " Clean up whitespace
+    call dein#add('bronson/vim-trailing-whitespace')
+            " Validate source
+    call dein#add( 'scrooloose/syntastic.git', { 'lazy':1, 'on_event' : 'InsertEnter' })
+
+            " Align anything (:Tabularize)
+    call dein#add( 'godlygeek/tabular.git', { 'lazy':1,'on_cmd': 'Tabularize' })
+    " Various
+            " solarized colors
+    call dein#add('altercation/vim-colors-solarized.git')
+            " support for async actions
+    call dein#add('shougo/vimproc.vim', {'build': 'make'})
+    " Manpage support
+    call dein#add( 'jez/vim-superman',{'lazy':1,'on_cmd': 'SuperMan'})
+            " The vim wiki
+    call dein#add( 'zerodogg/vimwiki', {
+                    \ 'rev':'solarized',
+                    \ 'mappings' : '<Plug>Vimwiki',
+                    \ 'on_path': '\.wiki$',
+                    \ })
+        " Distraction-free writing
+    call dein#add( 'junegunn/goyo.vim', {'lazy':1,'on_cmd':['Goyo']})
+        " :SudoWrite
+    call dein#add( 'chrisbra/SudoEdit.vim', {'lazy':1, 'on_cmd':[ 'SudoWrite', 'SudoRead' ] })
+        " interface to files, buffers etc.
+    call dein#add('shougo/unite.vim')
+        " MRU for unite
+    call dein#add('shougo/neomru.vim')
+        " vim-based file browser
+    call dein#add( 'shougo/vimfiler.vim')
+    "}}}
+    " Completion {{{
+    if has('lua') && has('patch-7.3.885') && !exists('_vimrc_no_complete')
+            " Base completion
+        call dein#add( 'shougo/neocomplete.vim')
+            " Perl omni completion
+        call dein#add( 'c9s/perlomni.vim', { 'lazy':1,'on_ft':'perl' })
+            " Snippets support
+        call dein#add('shougo/neosnippet')
+            " Snippets content
+        call dein#add('zerodogg/neosnippet-snippets')
+    end "}}}
+  call dein#end()
+  call dein#save_state()
 endif
-
-" Required:
-call neobundle#begin(expand('~/.vim/bundle'))
-
-" Let NeoBundle manage NeoBundle
-" Required:
-NeoBundleFetch 'Shougo/neobundle.vim'
 "}}}
 
 " Local RC file (.head-version) {{{
 if filereadable(glob("~/.vimrc_local.head"))
 	source ~/.vimrc_local.head
 endif "}}}
-
-" Bundles"{{{
-    " Additional and improved filetypes {{{
-        " Better markdown support
-NeoBundle 'tpope/vim-markdown'
-        " iCalendar syntax
-NeoBundle 'vim-scripts/icalendar.vim'
-        " Enhanced po-editing
-NeoBundle 'vim-scripts/po.vim--Jelenak'
-        " LaTeX support
-NeoBundle 'LaTeX-Box-Team/LaTeX-Box'
-        " GTK and SQlite hilight
-NeoBundle 'vim-scripts/gtk-vim-syntax'
-NeoBundle 'vim-scripts/sqlite_c'
-        " Ruby syntax
-NeoBundle 'vim-ruby/vim-ruby'
-        " An excellent outline format for vim
-NeoBundle 'vimoutliner/vimoutliner.git'
-        " Table-like CSV view
-NeoBundleLazy 'chrisbra/csv.vim', { 'filetypes':'csv' }
-        " systemd syntax
-NeoBundle 'Matt-Deacalion/vim-systemd-syntax'
-        " dokuwiki syntax
-NeoBundle 'nblock/vim-dokuwiki'
-        " Perl (also loads perlomni later)
-NeoBundleLazy 'zerodogg/vim-perl', { 'branch':'method-signatures-support', 'filetypes':[ 'perl' ] }
-NeoBundleLazy 'vim-perl/vim-perl', { 'filetypes':[ 'perl6' ], 'name':'vim-perl6' }
-NeoBundle 'zerodogg/vim-mason'
-        " Jinja2 syntax
-NeoBundle 'glench/vim-jinja2-syntax'
-        " todo.txt
-NeoBundle 'freitass/todo.txt-vim'
-NeoBundle 'elentok/todo.vim'
-        " Web (HTML5, JavaScript, JSON, CSS, plus SCSS, tag auto-close,
-        "  mustache, eco templates)
-NeoBundle 'othree/html5.vim'
-NeoBundle 'jelera/vim-javascript-syntax'
-NeoBundle 'jiangmiao/simple-javascript-indenter'
-NeoBundle 'othree/javascript-libraries-syntax.vim'
-NeoBundle 'mustache/vim-mustache-handlebars'
-NeoBundle 'elzr/vim-json'
-NeoBundleLazy 'amirh/HTML-AutoCloseTag', { 'filetypes':'html' }
-NeoBundle 'cakebaker/scss-syntax.vim'
-NeoBundle 'groenewege/vim-less'
-NeoBundle 'kchmck/vim-coffee-script'
-NeoBundle 'briancollins/vim-jst'
-NeoBundle 'AndrewRadev/vim-eco'
-NeoBundle 'JulesWang/css.vim' "}}}
-    " Programming and editing utilities {{{
-            " Git utilities
-NeoBundle 'tpope/vim-fugitive.git', { 'augroup' : 'fugitive'}
-if(v:version < 702)
-    NeoBundle 'tpope/vim-git'
-end
-            " Clean up whitespace
-NeoBundle 'bronson/vim-trailing-whitespace'
-            " Validate source
-NeoBundleLazy 'scrooloose/syntastic.git', { 'insert' : 1 }
-
-            " Align anything (:Tabularize)
-NeoBundleLazy 'godlygeek/tabular.git', { 'commands': 'Tabularize' }
-    " Various
-            " solarized colors
-NeoBundle 'altercation/vim-colors-solarized.git'
-            " support for async actions
-NeoBundle 'Shougo/vimproc.vim', {
-\ 'build' : {
-\     'windows' : 'tools\\update-dll-mingw',
-\     'cygwin' : 'make -f make_cygwin.mak',
-\     'mac' : 'make -f make_mac.mak',
-\     'linux' : 'make',
-\     'unix' : 'gmake',
-\    },
-\ }
-    " Manpage support
-NeoBundleLazy 'jez/vim-superman',{'commands': 'SuperMan'}
-            " The vim wiki
-NeoBundleLazy 'zerodogg/vimwiki', {
-                \ 'branch':'solarized',
-                \ 'mappings' : '<Plug>Vimwiki',
-                \ 'filename_patterns': '\.wiki$',
-                \ }
-        " a shell inside vim
-NeoBundleLazy 'shougo/vimshell', {
-              \ 'depends' : 'Shougo/vimproc.vim',
-              \ 'autoload' : {
-              \   'commands' : [{ 'name' : 'VimShell',
-              \                   'complete' : 'customlist,vimshell#complete'},
-              \                 'VimShellExecute', 'VimShellInteractive',
-              \                 'VimShellTerminal', 'VimShellPop'],
-              \   'mappings' : '<Plug>'
-              \ }}
-        " Distraction-free writing
-NeoBundleLazy 'junegunn/goyo.vim', {'autoload': {'commands': ['Goyo']}}
-        " :SudoWrite
-NeoBundleLazy 'chrisbra/SudoEdit.vim', { 'commands':[ 'SudoWrite', 'SudoRead' ] }
-        " interface to files, buffers etc.
-NeoBundle 'shougo/unite.vim'
-        " MRU for unite
-NeoBundle 'shougo/neomru.vim'
-        " vim-based file browser
-NeoBundleLazy 'shougo/vimfiler.vim', {
-      \ 'depends' : 'Shougo/unite.vim',
-      \ 'commands' : [
-      \         { 'name' : ['VimFiler', 'Edit', 'Write'],
-      \           'complete' : 'customlist,vimfiler#complete' },
-      \         'Read', 'Source'],
-      \ 'mappings' : '<Plug>',
-      \ 'explorer' : 1,
-      \ } "}}}
-    " Completion {{{
-if has('lua') && has('patch-7.3.885') && !exists('_vimrc_no_complete')
-            " Base completion
-    NeoBundleLazy 'shougo/neocomplete.vim'
-            " Perl omni completion
-    NeoBundleLazy 'c9s/perlomni.vim', { 'filetypes':'perl' }
-            " Snippets support
-    NeoBundle 'Shougo/neosnippet'
-            " Snippets content
-    NeoBundle 'zerodogg/neosnippet-snippets'
-end "}}}
-"}}}
-
-" Final NeoBundle boilerplate"{{{
-" Required:
-call neobundle#end()
-
-"End NeoBundle Scripts-------------------------
-"}}}
 
 " Vim settings"{{{
 
@@ -568,7 +529,7 @@ autocmd BufRead,BufNewFile * :call PerFT_typo()
 "}}}
 
 " NeoComplete{{{1
-if neobundle#is_installed('neocomplete.vim')
+silent! if dein#check_install('shougo/neocomplete.vim')
     " Use neocomplete.
     let g:neocomplete#enable_at_startup = 1
     " Use smartcase.
