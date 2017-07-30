@@ -40,7 +40,7 @@ Xcursor.theme: Adwaita
 *color14:                 #93a1a1
 *color15:                 #fdf6e3
 
-xterm*faceName:           Terminus:style=Regular:size=12
+xterm*faceName:           xos4 Terminus:style=Regular:size=12
 
 
 !! -----
