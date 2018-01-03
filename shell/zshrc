@@ -53,9 +53,6 @@ compdef vman="man"
 # zsh-specific aliases
 alias rmtemp='\rm -fv *~'
 
-# Source shared aliases and settings
-[ -e ~/.shell_shared ] && source ~/.shell_shared
-
 # Set prompt
 _TERMTITLE_BASE=""
 if [[ "$SCHROOT_UID" != "" ]]; then
@@ -64,6 +61,9 @@ if [[ "$SCHROOT_UID" != "" ]]; then
 else
     PS1='[%? %n@%m %1~]%(!.#.$) '
 fi
+
+# Source shared aliases and settings
+[ -e ~/.shell_shared ] && source ~/.shell_shared
 # The timeout in n/10th of a second to wait for additional keys to be hit.
 # Reduced here in order to not have to wait for normal mode
 KEYTIMEOUT=1
