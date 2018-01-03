@@ -381,3 +381,8 @@ fi
 if [[ $- == *i* ]]; then
     stty -ixon
 fi
+
+# Source shell_shared_termux
+if [ -e "$HOME/.shell_shared_termux" ]; then
+	source "$HOME/.shell_shared_termux"
+fi

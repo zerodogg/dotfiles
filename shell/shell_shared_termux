@@ -1,0 +1,26 @@
+#!/bin/bash
+#!/bin/zsh
+# ^- Must work in both
+
+# ===============================================================
+# shell_shared_termux
+# Eskild Hustvedt
+# ===============================================================
+# This file contains shared aliases and functions that work both under
+# zsh and bash for use under termux. This should not be used in
+# non-termux environments.
+
+# Termux doesn't have a standard df, so override it
+alias df="df -h"
+
+# Set up a local tmp
+mkdir -p "$HOME/tmp"
+export TMPDIR="$HOME/tmp/"
+export TMP="$TMPDIR"
+
+# Configure the prompt
+if [ "${ZSH_VERSION}" "!=" "" ]; then
+    PS1='[%? termux %1~]%(!.#.$) '
+else
+    PS1='[$? termux \W]\$ '
+fi
