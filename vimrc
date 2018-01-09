@@ -457,6 +457,7 @@ silent! let g:vo_fold_length=79
 "}}}
 " --- SASS ---"{{{
 autocmd! FileType scss syntax sync minlines=1000
+let g:syntastic_scss_sass_quiet_messages = { 'regex': 'File to import not found or unreadable: .*' }
 "}}}
 " --- vimwiki ---"{{{
 autocmd! FileType vimwiki setlocal foldlevel=1 concealcursor=n conceallevel=2 tw=79
