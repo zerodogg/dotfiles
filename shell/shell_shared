@@ -251,6 +251,7 @@ alias 'wc-l'='wc -l'
 alias clearls='clear;ls'
 alias xp='cp'
 alias chomd='chmod'
+alias mossh='mosh'
 
 # Function to allow multiple typo declerations on one line. First arg is
 # the real, following args are the typos
