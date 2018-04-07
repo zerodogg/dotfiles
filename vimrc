@@ -32,7 +32,7 @@ if dein#load_state(expand('~/.vim/bundle/'))
 
     " Additional and improved filetypes {{{
         " Better markdown support
-    call dein#add('tpope/vim-markdown')
+    call dein#add('plasticboy/vim-markdown')
         " iCalendar syntax
     call dein#add('vim-scripts/icalendar.vim')
         " Enhanced po-editing
