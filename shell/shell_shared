@@ -303,7 +303,7 @@ function CALWRAP ()
 function GITWRAP ()
 {
 	OutputTermTitle "git $1"
-	if [ "$1" = 'stat' ]  || [ "$1" = 'status' ] || [ "$1" = 'stash' ]; then
+	if [ "$1" = 'stat' ]  || [ "$1" = 'status' ] || [ "$1" = 'stash' ] || [ "$1" = "branch" ]; then
 		GIT_PAGER='cat' \git "$@"
 	elif [ "$1" = 'logs' ]; then
 		shift
