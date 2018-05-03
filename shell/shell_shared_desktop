@@ -24,6 +24,10 @@ fi
 if [ -e /etc/arch-release ]; then
     export PATH="$HOME/bin:$HOME/.bin:$HOME/.local/bin:$PATH:/usr/games"
 fi
+# Append flatpak to the path
+if [ -e /var/lib/flatpak/exports/bin ]; then
+    export PATH="$PATH:/var/lib/flatpak/exports/bin"
+fi
 # Make mplayer go fullscreen and zoom by default
 if [ -e /etc/fedora-release ]; then
     alias mplayer='mplayer -fs -zoom -ao pulse,alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
