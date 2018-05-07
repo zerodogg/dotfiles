@@ -52,9 +52,6 @@ alias oggenc="oggenc -b 320"
 alias yum='PKGMANWRAP yum'
 # Defaults for jack
 alias jack='jack --query-now --rename --force --remove-files --bitrate 320 --encoder-name oggenc --encoders 2 '
-# Defaults for ripit
-alias ripit="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 2 --quality off --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
-alias 'ripit-ogg'="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 1 --quality off --oggencopt '-b 320' --eject --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
 # Less is more
 alias more='less'
 # Date in debian changelog format
@@ -63,8 +60,6 @@ alias debdate="LC_ALL=C date +'%a,  %d %b %Y %T %z'"
 alias nodate="date '+%d.%m.%Y'"
 # Alias for EST time
 alias finkdate='TZ=EST date'
-# Scan the wlan as a user and filter out junk
-alias iwscan="if type nmcli &>/dev/null; then nmcli device wifi rescan; sleep 1s;nmcli -p device wifi list; else /sbin/iwlist scan 2>&1|/bin/egrep -v '(lo|eth0|sit0)'|/bin/grep -v '^\s*\$';fi"
 # Proper vnc viewer
 if type ssvncviewer &>/dev/null; then
 	alias vncviewer='ssvncviewer'
@@ -121,3 +116,8 @@ function forwardSSH ()
     fi
     ssh -q -f -N -o Compression=yes -o ExitOnForwardFailure=yes -o ControlMaster=no -o ServerAliveCountMax=8 -o ServerAliveInterval=15 -o TCPKeepAlive=yes -o ForwardAgent=no -o ForwardX11=no $connectPort -R "$port":localhost:22 "$target"
 }
+# Defaults for ripit
+alias ripit="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 2 --quality off --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
+alias 'ripit-ogg'="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 1 --quality off --oggencopt '-b 320' --eject --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
+# Scan the wlan as a user and filter out junk
+alias iwscan="if type nmcli &>/dev/null; then nmcli device wifi rescan; sleep 1s;nmcli -p device wifi list; else /sbin/iwlist scan 2>&1|/bin/egrep -v '(lo|eth0|sit0)'|/bin/grep -v '^\s*\$';fi"
