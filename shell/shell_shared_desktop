@@ -25,8 +25,15 @@ if [ -e /etc/arch-release ]; then
     export PATH="$HOME/bin:$HOME/.bin:$HOME/.local/bin:$PATH:/usr/games"
 fi
 # Append flatpak to the path
+if [ -e "$HOME/.local/share/flatpak/exports/bin" ]; then
+    export PATH="$PATH:$HOME/.local/share/flatpak/exports/bin"
+fi
 if [ -e /var/lib/flatpak/exports/bin ]; then
     export PATH="$PATH:/var/lib/flatpak/exports/bin"
+fi
+# On my main boxes I use flatpak as a user
+if [[ "$USER" == "zerodogg" && "$HOST" =~ ^(browncoats|firefly) ]]; then
+    alias flatpak="flatpak --user"
 fi
 # Make mplayer go fullscreen and zoom by default
 if [ -e /etc/fedora-release ]; then
