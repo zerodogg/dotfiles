@@ -35,6 +35,8 @@ fi
 if [[ "$USER" == "zerodogg" && "$HOST" =~ ^(browncoats|firefly) ]]; then
     alias flatpak="flatpak --user"
 fi
+# Initialize flatpak with flathub
+alias flatpak-init-flathub="flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 # Make mplayer go fullscreen and zoom by default
 if [ -e /etc/fedora-release ]; then
     alias mplayer='mplayer -fs -zoom -ao pulse,alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
@@ -128,3 +130,7 @@ alias ripit="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemp
 alias 'ripit-ogg'="ripit --underscore --dirtemplate '\"\$artist/\$album\"' --tracktemplate '\"\$tracknum-\$artist-\$trackname\"' --playlist 0 --coder 1 --quality off --oggencopt '-b 320' --eject --nointeraction --underscore --nicerip 2 --nice 12 --outputdir ./ --threads 2"
 # Scan the wlan as a user and filter out junk
 alias iwscan="if type nmcli &>/dev/null; then nmcli device wifi rescan; sleep 1s;nmcli -p device wifi list; else /sbin/iwlist scan 2>&1|/bin/egrep -v '(lo|eth0|sit0)'|/bin/grep -v '^\s*\$';fi"
+# Source flatpak aliases if present
+if [ -e ~/.shell_shared_desktop_flatpak ]; then
+    source ~/.shell_shared_desktop_flatpak
+fi

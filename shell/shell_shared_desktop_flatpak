@@ -1,0 +1,25 @@
+#!/bin/bash
+#!/bin/zsh
+# ^- Must work in both
+
+# ===============================================================
+# shell_shared_desktop_flatpak
+# Eskild Hustvedt
+# ===============================================================
+# This file contains aliases to use flatpak-versions of apps if installed
+
+function aliasIfMissing ()
+{
+    app="$1";shift
+    if ! type $app &>/dev/null; then
+        alias "$app"="$@"
+    fi
+}
+
+if [ -e ~/.local/share/flatpak ]; then
+    aliasIfMissing gitg org.gnome.gitg
+    aliasIfMissing lowriter "org.libreoffice.LibreOffice --writer"
+    aliasIfMissing localc "org.libreoffice.LibreOffice --calc"
+    aliasIfMissing loimpress "org.libreoffice.LibreOffice --impress"
+    aliasIfMissing lobase "org.libreoffice.LibreOffice --base"
+fi
