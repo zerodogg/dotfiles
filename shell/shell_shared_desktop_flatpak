@@ -6,7 +6,22 @@
 # shell_shared_desktop_flatpak
 # Eskild Hustvedt
 # ===============================================================
-# This file contains aliases to use flatpak-versions of apps if installed
+# This file contains aliases for flatpak, including aliases for using
+# flatpak-versions of apps if installed
+
+# Append flatpak to the path
+if [ -e "$HOME/.local/share/flatpak/exports/bin" ]; then
+    export PATH="$PATH:$HOME/.local/share/flatpak/exports/bin"
+fi
+if [ -e /var/lib/flatpak/exports/bin ]; then
+    export PATH="$PATH:/var/lib/flatpak/exports/bin"
+fi
+
+# Use flatpak as a user
+alias flatpak="flatpak --user"
+
+# Initialize flatpak with flathub
+alias flatpak-init-flathub="flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
 function aliasIfMissing ()
 {
