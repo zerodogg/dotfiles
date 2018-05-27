@@ -1,0 +1,11 @@
+# ===============================================================
+# screenrc-background
+# File to launch a background session of screen
+# Eskild Hustvedt
+# vim: ft=screen:
+# ===============================================================
+
+source $HOME/.screenrc
+hardstatus ignore
+defbce off
+term screen-256color
