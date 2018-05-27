@@ -362,6 +362,38 @@ vman() {
     echo "No manual entry for $*"
   fi
 }
+# Update the distro
+dist-update ()
+{
+    if type flatpak &>/dev/null; then
+        echo "$ flatpak update --user"
+        flatpak update --user
+    fi
+    if [ -e /etc/arch-release ]; then
+        if type pacaur &>/dev/null; then
+            echo "$ pacaur -Suy"
+            pacaur -Suy
+            if [ "$?" = "0" ]; then
+                echo "$ sudo paccache -v -r"
+                sudo paccache -v -r
+            fi
+        else
+            echo "$ sudo pacman -Suy"
+            sudo pacman -Suy
+            if [ "$?" = "0" ]; then
+                echo "$ sudo paccache -v -r"
+                sudo paccache -v -r
+            fi
+        fi
+    elif type apt &>/dev/null; then
+        echo "$ sudo apt update"
+        sudo apt update
+        echo "$ sudo apt upgrade"
+        sudo apt upgrade
+        echo "$ sudo apt full-upgrade"
+        sudo apt full-upgrade
+    fi
+}
 
 # -----------------------------------------------------------------------
 # Some environment settings that can't be in env_shared due to load order
