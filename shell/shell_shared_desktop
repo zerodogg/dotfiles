@@ -20,10 +20,6 @@ if [ "$COLORTERM" = "gnome-terminal" ] || [ "$VTE_VERSION" -ge "0380" ]; then
         export TERM="xterm-256color"
     fi
 fi
-# My own commands on arch
-if [ -e /etc/arch-release ]; then
-    export PATH="$HOME/bin:$HOME/.bin:$HOME/.local/bin:$PATH:/usr/games"
-fi
 # Make mplayer go fullscreen and zoom by default
 if [ -e /etc/fedora-release ]; then
     alias mplayer='mplayer -fs -zoom -ao pulse,alsa,oss,sdl -alang jp,jpn,no,nn,nb,en,eng,norwegian,english -slang en,eng,no,nn,nb,english,norwegian -prefer-ipv4 -stop-xscreensaver'
